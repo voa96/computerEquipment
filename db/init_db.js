@@ -27,7 +27,7 @@ function createSequelize() {
     return new Sequelize(DB_NAME, DB_USER, DB_PASS, {
         host: DB_HOST,
         port: DB_PORT,
-        dialect: 'postgres',
+        dialect: 'sqlite',
     });
 }
 module.exports = {

@@ -80,11 +80,72 @@ function defineModel(sequelize){
         description:{
             type:DataTypes.TEXT
         }
-    }) 
-    return { User, Categories, Products }
+    })
+    const Orders = sequelize.define('Orders', {
+        id:{
+            type:DataTypes.INTEGER,
+            primaryKey: true
+        },
+        user_id:{
+            type:DataTypes.INTEGER,
+            references:{
+                model:"User",
+                key:'id'
+            }
+        },
+        status:{
+            type:DataTypes.STRING(30),
+            defaultValue: 'новый заказ'
+        },
+        total_amount:{
+            type:DataTypes.DECIMAL(10,2)
+        },
+        delivery_addres:{
+            type:DataTypes.TEXT,
+        },
+        phone:{
+            type:DataTypes.STRING(11),
+            allowNull:false,
+            validate:{
+                isMobilePhone:'ru_RU'
+            }
+        },
+        comment:{
+            type:DataTypes.TEXT,
+        }
+    })
+    const Order_items = sequelize.define('Order_items',{
+        id: {
+            type:DataTypes.INTEGER,
+            primaryKey: true
+        },
+        order_id:{
+            type:DataTypes.INTEGER,
+            references:{
+                model:'orders',
+                key:'id'
+            },
+        },
+        product_id:{
+            type:DataTypes.INTEGER,
+            references:{
+                model:'Products',
+                key:'id'
+            }
+        },
+        quantity:{
+            type:DataTypes.INTEGER,
+            allowNull:false
+        },
+        price:{
+            type:DataTypes.DECIMAL(10,2),
+            allowNull:false
+        }
+    })
+    return { User, Categories, Products, Orders, Order_items }
 }
 
-async function createTables(sequelize, User, Categories,Products) {
+async function createTables(sequelize, User, Categories,Products, ) {
     const [result] = await sequelize.query(`SELECT 1 FROM pg_database WHERE datname = '${DB_NAME}'`)
     if (result.length === 0){
         console.log('ошибка подключения');
@@ -98,8 +159,8 @@ async function createTables(sequelize, User, Categories,Products) {
 async function main() {
     const sequelize = createSequelize()
     await sequelize.authenticate();
-    const {User, Categories, Products} = defineModel(sequelize)
-    await createTables(sequelize, User,Categories,Products)
+    const {User, Categories, Products, Orders,Order_items} = defineModel(sequelize)
+    await createTables(sequelize, User,Categories,Products, Orders ,Order_items)
     await sequelize.close();
 }
 
