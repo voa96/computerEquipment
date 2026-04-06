@@ -54,13 +54,6 @@ function defineModel(sequelize){
             autoIncrement: true,
             primaryKey: true,
         },
-        category_id:{
-            type:DataTypes.INTEGER,
-            references:{
-                model: 'Categories',
-                key: 'id'
-            }
-        },
         name:{
             type:DataTypes.STRING(30),
             allowNull:true,
@@ -84,14 +77,8 @@ function defineModel(sequelize){
     const Orders = sequelize.define('Orders', {
         id:{
             type:DataTypes.INTEGER,
-            primaryKey: true
-        },
-        user_id:{
-            type:DataTypes.INTEGER,
-            references:{
-                model:"User",
-                key:'id'
-            }
+            primaryKey: true,
+            autoIncrement: true
         },
         status:{
             type:DataTypes.STRING(30),
@@ -117,21 +104,8 @@ function defineModel(sequelize){
     const Order_items = sequelize.define('Order_items',{
         id: {
             type:DataTypes.INTEGER,
-            primaryKey: true
-        },
-        order_id:{
-            type:DataTypes.INTEGER,
-            references:{
-                model:'orders',
-                key:'id'
-            },
-        },
-        product_id:{
-            type:DataTypes.INTEGER,
-            references:{
-                model:'Products',
-                key:'id'
-            }
+            primaryKey: true,
+            autoIncrement: true
         },
         quantity:{
             type:DataTypes.INTEGER,
@@ -142,10 +116,21 @@ function defineModel(sequelize){
             allowNull:false
         }
     })
+        Categories.hasMany(Products, { foreignKey: 'category_id' });
+    Products.belongsTo(Categories, { foreignKey: 'category_id' });
+    
+    User.hasMany(Orders, { foreignKey: 'user_id' });
+    Orders.belongsTo(User, { foreignKey: 'user_id' });
+    
+    Orders.hasMany(Order_items, { foreignKey: 'order_id' });
+    Order_items.belongsTo(Orders, { foreignKey: 'order_id' });
+    
+    Products.hasMany(Order_items, { foreignKey: 'product_id' });
+    Order_items.belongsTo(Products, { foreignKey: 'product_id' });
     return { User, Categories, Products, Orders, Order_items }
 }
 
-async function createTables(sequelize, User, Categories,Products, ) {
+async function createTables(sequelize, User, Categories,Products,Orders,Order_items ) {
     const [result] = await sequelize.query(`SELECT 1 FROM pg_database WHERE datname = '${DB_NAME}'`)
     if (result.length === 0){
         console.log('ошибка подключения');
