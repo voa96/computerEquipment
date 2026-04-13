@@ -1,5 +1,5 @@
 const { Sequelize, DataTypes } = require('sequelize');
-const { CheckCreateDB, createSequelize, DB_NAME } = require('./init_db');
+const { CheckCreateDB, createSequelizeConnector, DB_NAME } = require('./init_db');
 
 
 
@@ -254,7 +254,7 @@ async function fillTable(User,Categories,Products, Orders ,Order_items){
 }
 
 async function main() {
-    const sequelize = createSequelize()
+    const sequelize = createSequelizeConnector()
     await sequelize.authenticate();
     const {User, Categories, Products, Orders,Order_items} = defineModel(sequelize)
     await createTables(sequelize, User,Categories,Products, Orders ,Order_items)
@@ -264,4 +264,5 @@ async function main() {
 
 module.exports = {
     main,
+    defineModel
 }

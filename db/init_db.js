@@ -23,7 +23,7 @@ async function CheckCreateDB() {
     await sequelize.close();
 }
 
-function createSequelize() {
+function createSequelizeConnector() {
     return new Sequelize(DB_NAME, DB_USER, DB_PASS, {
         host: DB_HOST,
         port: DB_PORT,
@@ -32,7 +32,7 @@ function createSequelize() {
 }
 module.exports = {
     CheckCreateDB,
-    createSequelize,     
+    createSequelizeConnector,     
     DB_NAME,  
     DB_USER,    
     DB_PASS,   
