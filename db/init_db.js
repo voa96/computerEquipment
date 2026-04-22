@@ -19,7 +19,7 @@ async function CheckCreateDB() {
 function createSequelizeConnector() {
     return new Sequelize({
         dialect: 'sqlite',
-        storage: `./${DB_NAME}.sqlite`
+        storage: `./database/${DB_NAME}.sqlite`
     });
 }
 

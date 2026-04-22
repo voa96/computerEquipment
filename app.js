@@ -1,10 +1,9 @@
 const { Sequelize } = require('sequelize');
-const {CheckCreateDB} = require('./db/init_db');
 const {main} = require('./db/addTable');
-
+const { seedDatabase } = require('./db/seed');
     
 async function startApp() {
-    await CheckCreateDB()
     await main()
+    await seedDatabase()
 }
 startApp()
