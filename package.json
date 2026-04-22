@@ -2,7 +2,8 @@
   "dependencies": {
     "express": "^5.2.1",
     "pg": "^8.20.0",
-    "sequelize": "^6.37.8"
+    "sequelize": "^6.37.8",
+    "sqlite3": "^6.0.1"
   },
   "scripts": {
     "app": "node app.js"

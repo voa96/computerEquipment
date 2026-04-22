@@ -1,5 +1,5 @@
 const { Sequelize, DataTypes } = require('sequelize');
-const { CheckCreateDB, createSequelizeConnector, DB_NAME } = require('./init_db');
+const { CheckCreateDB, createSequelizeConnector, DB_NAME, sequelize } = require('./init_db');
 
 
 
@@ -140,15 +140,15 @@ function defineModel(sequelize){
 }
 
 async function createTables(sequelize, User, Categories,Products,Orders,Order_items ) {
-    const [result] = await sequelize.query(`SELECT 1 FROM pg_database WHERE datname = '${DB_NAME}'`)
-    if (result.length === 0){
-        console.log('ошибка подключения');
-    }
-    else{
+    try{
+        sequelize.authenticate()
         await sequelize.sync({ force: false });
-        console.log('таблицы созданы');
+        console.log('табл созданы');
+    } catch(err){
+        console.err('ошибка', err)
     }
-}
+    }
+
 
 async function fillTable(User,Categories,Products, Orders ,Order_items){
     const user = await User.bulkCreate([{
@@ -254,12 +254,12 @@ async function fillTable(User,Categories,Products, Orders ,Order_items){
 }
 
 async function main() {
-    const sequelize = createSequelizeConnector()
+    // const sequelize = createSequelizeConnector()
     await sequelize.authenticate();
     const {User, Categories, Products, Orders,Order_items} = defineModel(sequelize)
     await createTables(sequelize, User,Categories,Products, Orders ,Order_items)
     await fillTable(User,Categories,Products, Orders ,Order_items)
-    await sequelize.close();
+    // await sequelize.close();
 }
 
 module.exports = {
