@@ -20,7 +20,7 @@ function defineModel(sequelize){
             }
         },
         phone:{
-            type:DataTypes.STRING(15),
+            type:DataTypes.STRING(20),
             allowNull: false,
         },
     },
